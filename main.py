@@ -20,7 +20,7 @@ def criar_nova_nota():
     except (FileExistsError, ValueError) as erro:
         print(f"\nErro: {erro}")
     else:
-        print(f"\nNota salva com sucesso em: {caminho}")
+        print(f"\nSucesso: Nota salva em: {caminho}")
 
 
 def mostrar_notas():
@@ -53,12 +53,12 @@ def mostrar_conteudo_nota():
         escolha = input("Digite o numero da nota: ")
 
         if not escolha.isdigit():
-            print("\nOpcao invalida.")
+            print("\nErro: Opcao invalida.")
         else:
             indice = int(escolha) - 1
 
             if indice < 0 or indice >= len(notas):
-                print("\nOpcao invalida.")
+                print("\nErro: Opcao invalida.")
             else:
                 nome_arquivo = notas[indice]
 
@@ -98,10 +98,10 @@ def main():
         elif opcao == "3":
             mostrar_conteudo_nota()
         elif opcao == "4":
-            print("\nSaindo do programa.")
+            print("\nSaindo...")
             break
         else:
-            print("\nOpcao invalida.")
+            print("\nErro: Opcao invalida.")
 
 
 if __name__ == "__main__":
