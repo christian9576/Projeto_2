@@ -9,7 +9,7 @@ def criar_nova_nota():
         print("\nErro: Titulo nao pode ficar vazio.")
         return
 
-    conteudo = input("Conteudo da nota: ")
+    conteudo = pedir_conteudo_da_nota()
 
     if not conteudo.strip():
         print("\nErro: Conteudo nao pode ficar vazio.")
@@ -21,6 +21,22 @@ def criar_nova_nota():
         print(f"\nErro: {erro}")
     else:
         print(f"\nSucesso: Nota salva em: {caminho}")
+
+
+def pedir_conteudo_da_nota():
+    print("Digite o conteudo da nota. Para finalizar, pressione Enter em uma linha vazia.")
+
+    linhas = []
+
+    while True:
+        linha = input()
+
+        if linha == "":
+            break
+
+        linhas.append(linha)
+
+    return "\n".join(linhas)
 
 
 def mostrar_notas():
