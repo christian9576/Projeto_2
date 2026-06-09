@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from notas import formatar_nome_arquivo, listar_notas, salvar_nota
+from notas import formatar_nome_arquivo, ler_nota, listar_notas, salvar_nota
 
 
 def test_formatar_nome_arquivo():
@@ -40,3 +40,16 @@ def test_listar_notas_retorna_lista_vazia_quando_nao_ha_notas(tmp_path):
     notas = listar_notas(tmp_path)
 
     assert notas == []
+
+
+def test_ler_nota_retorna_conteudo_de_nota_existente(tmp_path):
+    salvar_nota("Nota Para Ler", "Conteudo para leitura", tmp_path)
+
+    conteudo = ler_nota("nota-para-ler.md", tmp_path)
+
+    assert conteudo == "# Nota Para Ler\n\nConteudo para leitura\n"
+
+
+def test_ler_nota_gera_erro_para_nota_inexistente(tmp_path):
+    with pytest.raises(FileNotFoundError, match="Nota nao encontrada."):
+        ler_nota("nao-existe.md", tmp_path)

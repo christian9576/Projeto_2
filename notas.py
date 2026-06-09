@@ -36,3 +36,14 @@ def listar_notas(pasta=PASTA_NOTAS):
     nomes_das_notas = [arquivo.name for arquivo in arquivos]
 
     return sorted(nomes_das_notas)
+
+
+def ler_nota(nome_arquivo, pasta=PASTA_NOTAS):
+    criar_pasta_notas(pasta)
+
+    caminho = pasta / Path(nome_arquivo).name
+
+    if not caminho.exists():
+        raise FileNotFoundError("Nota nao encontrada.")
+
+    return caminho.read_text(encoding="utf-8")

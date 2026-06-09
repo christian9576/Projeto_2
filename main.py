@@ -1,4 +1,4 @@
-from notas import listar_notas, salvar_nota
+from notas import ler_nota, listar_notas, salvar_nota
 
 
 def criar_nova_nota():
@@ -25,11 +25,23 @@ def mostrar_notas():
         print(f"- {nota}")
 
 
+def mostrar_conteudo_nota():
+    nome_arquivo = input("Nome do arquivo da nota: ")
+
+    try:
+        conteudo = ler_nota(nome_arquivo)
+    except FileNotFoundError as erro:
+        print(f"Erro: {erro}")
+    else:
+        print(conteudo)
+
+
 def main():
     while True:
         print("1 - Criar nova nota")
         print("2 - Listar notas")
-        print("3 - Sair")
+        print("3 - Ler nota")
+        print("4 - Sair")
 
         opcao = input("Escolha uma opcao: ")
 
@@ -38,6 +50,8 @@ def main():
         elif opcao == "2":
             mostrar_notas()
         elif opcao == "3":
+            mostrar_conteudo_nota()
+        elif opcao == "4":
             print("Saindo do programa.")
             break
         else:
