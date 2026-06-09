@@ -85,3 +85,24 @@ def excluir_nota(nome_arquivo, pasta=PASTA_NOTAS):
     caminho.unlink()
 
     return caminho
+
+
+def editar_nota(nome_arquivo, novo_conteudo, pasta=PASTA_NOTAS):
+    if not novo_conteudo.strip():
+        raise ValueError("Conteudo nao pode ficar vazio.")
+
+    criar_pasta_notas(pasta)
+
+    caminho = pasta / Path(nome_arquivo).name
+
+    if not caminho.exists():
+        raise FileNotFoundError("Nota nao encontrada.")
+
+    conteudo_atual = caminho.read_text(encoding="utf-8")
+    linhas_atuais = conteudo_atual.splitlines()
+    primeira_linha = linhas_atuais[0] if linhas_atuais else f"# {caminho.stem}"
+    novo_texto = f"{primeira_linha}\n\n{novo_conteudo}\n"
+
+    caminho.write_text(novo_texto, encoding="utf-8")
+
+    return caminho

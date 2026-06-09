@@ -1,4 +1,4 @@
-from notas import buscar_notas, excluir_nota, ler_nota, listar_notas, salvar_nota
+from notas import buscar_notas, editar_nota, excluir_nota, ler_nota, listar_notas, salvar_nota
 
 
 def criar_nova_nota():
@@ -197,6 +197,59 @@ def excluir_nota_por_numero():
             return
 
 
+def editar_nota_por_numero():
+    print()
+    notas = listar_notas()
+
+    if not notas:
+        print("Nenhuma nota encontrada.")
+        return
+
+    exibir_lista_de_notas(notas)
+
+    escolha = input("Digite o numero da nota: ")
+
+    if not escolha.isdigit():
+        print("\nErro: Opcao invalida.")
+        return
+
+    indice = int(escolha) - 1
+
+    if indice < 0 or indice >= len(notas):
+        print("\nErro: Opcao invalida.")
+        return
+
+    nome_arquivo = notas[indice]
+
+    try:
+        conteudo_atual = ler_nota(nome_arquivo)
+    except FileNotFoundError as erro:
+        print(f"\nErro: {erro}")
+        return
+
+    print("\nConteudo atual:")
+    print(conteudo_atual)
+
+    novo_conteudo = pedir_conteudo_da_nota()
+
+    if not novo_conteudo.strip():
+        print("\nErro: Conteudo nao pode ficar vazio.")
+        return
+
+    confirmacao = input(f"Tem certeza que deseja substituir o conteudo de {nome_arquivo}? (s/n): ")
+
+    if confirmacao.lower() != "s":
+        print("\nEdicao cancelada.")
+        return
+
+    try:
+        editar_nota(nome_arquivo, novo_conteudo)
+    except (FileNotFoundError, ValueError) as erro:
+        print(f"\nErro: {erro}")
+    else:
+        print(f"\nSucesso: Nota editada: {nome_arquivo}")
+
+
 def mostrar_menu():
     print()
     print("=== Organizador de Notas ===")
@@ -205,7 +258,8 @@ def mostrar_menu():
     print("3 - Ler nota")
     print("4 - Buscar notas")
     print("5 - Excluir nota")
-    print("6 - Sair")
+    print("6 - Editar nota")
+    print("7 - Sair")
 
 
 def main():
@@ -225,6 +279,8 @@ def main():
         elif opcao == "5":
             excluir_nota_por_numero()
         elif opcao == "6":
+            editar_nota_por_numero()
+        elif opcao == "7":
             print("\nSaindo...")
             break
         else:

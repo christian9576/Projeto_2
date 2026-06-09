@@ -4,6 +4,7 @@ import pytest
 
 from notas import (
     buscar_notas,
+    editar_nota,
     excluir_nota,
     formatar_nome_arquivo,
     ler_nota,
@@ -141,3 +142,24 @@ def test_excluir_nota_remove_nota_existente(tmp_path):
 def test_excluir_nota_gera_erro_para_nota_inexistente(tmp_path):
     with pytest.raises(FileNotFoundError, match="Nota nao encontrada."):
         excluir_nota("nao-existe.md", tmp_path)
+
+
+def test_editar_nota_substitui_conteudo_de_nota_existente(tmp_path):
+    caminho = salvar_nota("Nota Editavel", "Conteudo antigo", tmp_path)
+
+    caminho_editado = editar_nota("nota-editavel.md", "Conteudo novo", tmp_path)
+
+    assert caminho_editado == caminho
+    assert caminho.read_text(encoding="utf-8") == "# Nota Editavel\n\nConteudo novo\n"
+
+
+def test_editar_nota_gera_erro_para_nota_inexistente(tmp_path):
+    with pytest.raises(FileNotFoundError, match="Nota nao encontrada."):
+        editar_nota("nao-existe.md", "Conteudo novo", tmp_path)
+
+
+def test_editar_nota_gera_erro_para_conteudo_vazio(tmp_path):
+    salvar_nota("Nota Editavel", "Conteudo antigo", tmp_path)
+
+    with pytest.raises(ValueError, match="Conteudo nao pode ficar vazio."):
+        editar_nota("nota-editavel.md", "   ", tmp_path)
