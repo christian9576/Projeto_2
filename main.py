@@ -31,36 +31,40 @@ def exibir_lista_de_notas(notas):
 
 
 def mostrar_conteudo_nota():
-    print()
-    notas = listar_notas()
-
-    if not notas:
-        print("Nenhuma nota encontrada.")
-        return
-
-    exibir_lista_de_notas(notas)
-
-    escolha = input("Digite o numero da nota: ")
-
-    if not escolha.isdigit():
-        print("\nOpcao invalida.")
-        return
-
-    indice = int(escolha) - 1
-
-    if indice < 0 or indice >= len(notas):
-        print("\nOpcao invalida.")
-        return
-
-    nome_arquivo = notas[indice]
-
-    try:
-        conteudo = ler_nota(nome_arquivo)
-    except FileNotFoundError as erro:
-        print(f"\nErro: {erro}")
-    else:
+    while True:
         print()
-        print(conteudo)
+        notas = listar_notas()
+
+        if not notas:
+            print("Nenhuma nota encontrada.")
+            return
+
+        exibir_lista_de_notas(notas)
+
+        escolha = input("Digite o numero da nota: ")
+
+        if not escolha.isdigit():
+            print("\nOpcao invalida.")
+        else:
+            indice = int(escolha) - 1
+
+            if indice < 0 or indice >= len(notas):
+                print("\nOpcao invalida.")
+            else:
+                nome_arquivo = notas[indice]
+
+                try:
+                    conteudo = ler_nota(nome_arquivo)
+                except FileNotFoundError as erro:
+                    print(f"\nErro: {erro}")
+                else:
+                    print()
+                    print(conteudo)
+
+        continuar = input("Deseja ler outra nota? (s/n): ")
+
+        if continuar.lower() != "s":
+            return
 
 
 def mostrar_menu():
