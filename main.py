@@ -1,4 +1,4 @@
-from notas import ler_nota, listar_notas, salvar_nota
+from notas import buscar_notas, ler_nota, listar_notas, salvar_nota
 
 
 def criar_nova_nota():
@@ -55,6 +55,25 @@ def exibir_lista_de_notas(notas):
         print(f"{numero} - {nota}")
 
 
+def buscar_notas_por_termo():
+    print()
+    termo = input("Termo de busca: ")
+
+    try:
+        resultados = buscar_notas(termo)
+    except ValueError as erro:
+        print(f"\nErro: {erro}")
+        return
+
+    if not resultados:
+        print("\nNenhuma nota encontrada para esse termo.")
+        return
+
+    print("\nResultados encontrados:")
+    for numero, nota in enumerate(resultados, start=1):
+        print(f"{numero} - {nota}")
+
+
 def mostrar_conteudo_nota():
     while True:
         print()
@@ -98,7 +117,8 @@ def mostrar_menu():
     print("1 - Criar nova nota")
     print("2 - Listar notas")
     print("3 - Ler nota")
-    print("4 - Sair")
+    print("4 - Buscar notas")
+    print("5 - Sair")
 
 
 def main():
@@ -114,6 +134,8 @@ def main():
         elif opcao == "3":
             mostrar_conteudo_nota()
         elif opcao == "4":
+            buscar_notas_por_termo()
+        elif opcao == "5":
             print("\nSaindo...")
             break
         else:

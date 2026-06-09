@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from notas import formatar_nome_arquivo, ler_nota, listar_notas, salvar_nota
+from notas import buscar_notas, formatar_nome_arquivo, ler_nota, listar_notas, salvar_nota
 
 
 def test_formatar_nome_arquivo():
@@ -81,3 +81,42 @@ def test_salvar_nota_gera_erro_para_conteudo_com_espacos(tmp_path):
         salvar_nota("Titulo valido", "   ", tmp_path)
 
     assert list(tmp_path.glob("*.md")) == []
+
+
+def test_buscar_notas_encontra_termo_no_nome_do_arquivo(tmp_path):
+    salvar_nota("Python Arquivos", "Conteudo sobre caminhos", tmp_path)
+    salvar_nota("Git Basico", "Conteudo sobre versionamento", tmp_path)
+
+    resultados = buscar_notas("python", tmp_path)
+
+    assert resultados == ["python-arquivos.md"]
+
+
+def test_buscar_notas_encontra_termo_no_conteudo(tmp_path):
+    salvar_nota("Anotacao", "Aprendendo sobre pathlib", tmp_path)
+    salvar_nota("Outro assunto", "Conteudo sobre listas", tmp_path)
+
+    resultados = buscar_notas("pathlib", tmp_path)
+
+    assert resultados == ["anotacao.md"]
+
+
+def test_buscar_notas_ignora_maiusculas_e_minusculas(tmp_path):
+    salvar_nota("Git Basico", "Controle de Versao", tmp_path)
+
+    resultados = buscar_notas("VERSAO", tmp_path)
+
+    assert resultados == ["git-basico.md"]
+
+
+def test_buscar_notas_retorna_lista_vazia_quando_nao_encontra_resultados(tmp_path):
+    salvar_nota("Python", "Conteudo sobre arquivos", tmp_path)
+
+    resultados = buscar_notas("javascript", tmp_path)
+
+    assert resultados == []
+
+
+def test_buscar_notas_gera_erro_para_termo_vazio(tmp_path):
+    with pytest.raises(ValueError, match="Termo de busca nao pode ficar vazio."):
+        buscar_notas("   ", tmp_path)
