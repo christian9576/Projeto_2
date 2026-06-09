@@ -26,17 +26,22 @@ def mostrar_notas():
 
 
 def main():
-    print("1 - Criar nova nota")
-    print("2 - Listar notas")
+    while True:
+        print("1 - Criar nova nota")
+        print("2 - Listar notas")
+        print("3 - Sair")
 
-    opcao = input("Escolha uma opcao: ")
+        opcao = input("Escolha uma opcao: ")
 
-    if opcao == "1":
-        criar_nova_nota()
-    elif opcao == "2":
-        mostrar_notas()
-    else:
-        print("Opcao invalida.")
+        if opcao == "1":
+            criar_nova_nota()
+        elif opcao == "2":
+            mostrar_notas()
+        elif opcao == "3":
+            print("Saindo do programa.")
+            break
+        else:
+            print("Opcao invalida.")
 
 
 if __name__ == "__main__":
