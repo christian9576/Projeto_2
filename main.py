@@ -1,7 +1,7 @@
-from notas import salvar_nota
+from notas import listar_notas, salvar_nota
 
 
-def main():
+def criar_nova_nota():
     titulo = input("Titulo da nota: ")
     conteudo = input("Conteudo da nota: ")
 
@@ -11,6 +11,32 @@ def main():
         print(f"Erro: {erro}")
     else:
         print(f"Nota salva com sucesso em: {caminho}")
+
+
+def mostrar_notas():
+    notas = listar_notas()
+
+    if not notas:
+        print("Nenhuma nota encontrada.")
+        return
+
+    print("Notas salvas:")
+    for nota in notas:
+        print(f"- {nota}")
+
+
+def main():
+    print("1 - Criar nova nota")
+    print("2 - Listar notas")
+
+    opcao = input("Escolha uma opcao: ")
+
+    if opcao == "1":
+        criar_nova_nota()
+    elif opcao == "2":
+        mostrar_notas()
+    else:
+        print("Opcao invalida.")
 
 
 if __name__ == "__main__":

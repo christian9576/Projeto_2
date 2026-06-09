@@ -27,3 +27,12 @@ def salvar_nota(titulo, conteudo):
     caminho.write_text(texto_da_nota, encoding="utf-8")
 
     return caminho
+
+
+def listar_notas():
+    criar_pasta_notas()
+
+    arquivos = PASTA_NOTAS.glob("*.md")
+    nomes_das_notas = [arquivo.name for arquivo in arquivos]
+
+    return sorted(nomes_das_notas)
