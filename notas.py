@@ -72,3 +72,16 @@ def buscar_notas(termo, pasta=PASTA_NOTAS):
             notas_encontradas.append(caminho.name)
 
     return sorted(notas_encontradas)
+
+
+def excluir_nota(nome_arquivo, pasta=PASTA_NOTAS):
+    criar_pasta_notas(pasta)
+
+    caminho = pasta / Path(nome_arquivo).name
+
+    if not caminho.exists():
+        raise FileNotFoundError("Nota nao encontrada.")
+
+    caminho.unlink()
+
+    return caminho

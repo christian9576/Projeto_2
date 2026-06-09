@@ -1,4 +1,4 @@
-from notas import buscar_notas, ler_nota, listar_notas, salvar_nota
+from notas import buscar_notas, excluir_nota, ler_nota, listar_notas, salvar_nota
 
 
 def criar_nova_nota():
@@ -157,6 +157,43 @@ def mostrar_conteudo_nota():
             return
 
 
+def excluir_nota_por_numero():
+    print()
+    notas = listar_notas()
+
+    if not notas:
+        print("Nenhuma nota encontrada.")
+        return
+
+    exibir_lista_de_notas(notas)
+
+    escolha = input("Digite o numero da nota: ")
+
+    if not escolha.isdigit():
+        print("\nErro: Opcao invalida.")
+        return
+
+    indice = int(escolha) - 1
+
+    if indice < 0 or indice >= len(notas):
+        print("\nErro: Opcao invalida.")
+        return
+
+    nome_arquivo = notas[indice]
+    confirmacao = input(f"Tem certeza que deseja excluir {nome_arquivo}? (s/n): ")
+
+    if confirmacao.lower() != "s":
+        print("\nExclusao cancelada.")
+        return
+
+    try:
+        excluir_nota(nome_arquivo)
+    except FileNotFoundError as erro:
+        print(f"\nErro: {erro}")
+    else:
+        print(f"\nSucesso: Nota excluida: {nome_arquivo}")
+
+
 def mostrar_menu():
     print()
     print("=== Organizador de Notas ===")
@@ -164,7 +201,8 @@ def mostrar_menu():
     print("2 - Listar notas")
     print("3 - Ler nota")
     print("4 - Buscar notas")
-    print("5 - Sair")
+    print("5 - Excluir nota")
+    print("6 - Sair")
 
 
 def main():
@@ -182,6 +220,8 @@ def main():
         elif opcao == "4":
             buscar_notas_por_termo()
         elif opcao == "5":
+            excluir_nota_por_numero()
+        elif opcao == "6":
             print("\nSaindo...")
             break
         else:

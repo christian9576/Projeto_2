@@ -2,7 +2,14 @@ from pathlib import Path
 
 import pytest
 
-from notas import buscar_notas, formatar_nome_arquivo, ler_nota, listar_notas, salvar_nota
+from notas import (
+    buscar_notas,
+    excluir_nota,
+    formatar_nome_arquivo,
+    ler_nota,
+    listar_notas,
+    salvar_nota,
+)
 
 
 def test_formatar_nome_arquivo():
@@ -120,3 +127,17 @@ def test_buscar_notas_retorna_lista_vazia_quando_nao_encontra_resultados(tmp_pat
 def test_buscar_notas_gera_erro_para_termo_vazio(tmp_path):
     with pytest.raises(ValueError, match="Termo de busca nao pode ficar vazio."):
         buscar_notas("   ", tmp_path)
+
+
+def test_excluir_nota_remove_nota_existente(tmp_path):
+    caminho = salvar_nota("Nota Para Excluir", "Conteudo", tmp_path)
+
+    caminho_excluido = excluir_nota("nota-para-excluir.md", tmp_path)
+
+    assert caminho_excluido == caminho
+    assert not caminho.exists()
+
+
+def test_excluir_nota_gera_erro_para_nota_inexistente(tmp_path):
+    with pytest.raises(FileNotFoundError, match="Nota nao encontrada."):
+        excluir_nota("nao-existe.md", tmp_path)
