@@ -4,7 +4,16 @@ from notas import ler_nota, listar_notas, salvar_nota
 def criar_nova_nota():
     print()
     titulo = input("Titulo da nota: ")
+
+    if not titulo.strip():
+        print("\nErro: Titulo nao pode ficar vazio.")
+        return
+
     conteudo = input("Conteudo da nota: ")
+
+    if not conteudo.strip():
+        print("\nErro: Conteudo nao pode ficar vazio.")
+        return
 
     try:
         caminho = salvar_nota(titulo, conteudo)
