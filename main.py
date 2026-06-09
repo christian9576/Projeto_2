@@ -158,40 +158,43 @@ def mostrar_conteudo_nota():
 
 
 def excluir_nota_por_numero():
-    print()
-    notas = listar_notas()
+    while True:
+        print()
+        notas = listar_notas()
 
-    if not notas:
-        print("Nenhuma nota encontrada.")
-        return
+        if not notas:
+            print("Nenhuma nota encontrada.")
+            return
 
-    exibir_lista_de_notas(notas)
+        exibir_lista_de_notas(notas)
 
-    escolha = input("Digite o numero da nota: ")
+        escolha = input("Digite o numero da nota: ")
 
-    if not escolha.isdigit():
-        print("\nErro: Opcao invalida.")
-        return
+        if not escolha.isdigit():
+            print("\nErro: Opcao invalida.")
+        else:
+            indice = int(escolha) - 1
 
-    indice = int(escolha) - 1
+            if indice < 0 or indice >= len(notas):
+                print("\nErro: Opcao invalida.")
+            else:
+                nome_arquivo = notas[indice]
+                confirmacao = input(f"Tem certeza que deseja excluir {nome_arquivo}? (s/n): ")
 
-    if indice < 0 or indice >= len(notas):
-        print("\nErro: Opcao invalida.")
-        return
+                if confirmacao.lower() != "s":
+                    print("\nExclusao cancelada.")
+                else:
+                    try:
+                        excluir_nota(nome_arquivo)
+                    except FileNotFoundError as erro:
+                        print(f"\nErro: {erro}")
+                    else:
+                        print(f"\nSucesso: Nota excluida: {nome_arquivo}")
 
-    nome_arquivo = notas[indice]
-    confirmacao = input(f"Tem certeza que deseja excluir {nome_arquivo}? (s/n): ")
+        continuar = input("Deseja excluir outra nota? (s/n): ")
 
-    if confirmacao.lower() != "s":
-        print("\nExclusao cancelada.")
-        return
-
-    try:
-        excluir_nota(nome_arquivo)
-    except FileNotFoundError as erro:
-        print(f"\nErro: {erro}")
-    else:
-        print(f"\nSucesso: Nota excluida: {nome_arquivo}")
+        if continuar.lower() != "s":
+            return
 
 
 def mostrar_menu():
