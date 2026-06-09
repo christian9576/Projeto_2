@@ -53,3 +53,31 @@ def test_ler_nota_retorna_conteudo_de_nota_existente(tmp_path):
 def test_ler_nota_gera_erro_para_nota_inexistente(tmp_path):
     with pytest.raises(FileNotFoundError, match="Nota nao encontrada."):
         ler_nota("nao-existe.md", tmp_path)
+
+
+def test_salvar_nota_gera_erro_para_titulo_vazio(tmp_path):
+    with pytest.raises(ValueError, match="Titulo nao pode ficar vazio."):
+        salvar_nota("", "Conteudo valido", tmp_path)
+
+    assert list(tmp_path.glob("*.md")) == []
+
+
+def test_salvar_nota_gera_erro_para_titulo_com_espacos(tmp_path):
+    with pytest.raises(ValueError, match="Titulo nao pode ficar vazio."):
+        salvar_nota("   ", "Conteudo valido", tmp_path)
+
+    assert list(tmp_path.glob("*.md")) == []
+
+
+def test_salvar_nota_gera_erro_para_conteudo_vazio(tmp_path):
+    with pytest.raises(ValueError, match="Conteudo nao pode ficar vazio."):
+        salvar_nota("Titulo valido", "", tmp_path)
+
+    assert list(tmp_path.glob("*.md")) == []
+
+
+def test_salvar_nota_gera_erro_para_conteudo_com_espacos(tmp_path):
+    with pytest.raises(ValueError, match="Conteudo nao pode ficar vazio."):
+        salvar_nota("Titulo valido", "   ", tmp_path)
+
+    assert list(tmp_path.glob("*.md")) == []

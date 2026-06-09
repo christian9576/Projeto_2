@@ -15,6 +15,12 @@ def formatar_nome_arquivo(titulo):
 
 
 def salvar_nota(titulo, conteudo, pasta=PASTA_NOTAS):
+    if not titulo.strip():
+        raise ValueError("Titulo nao pode ficar vazio.")
+
+    if not conteudo.strip():
+        raise ValueError("Conteudo nao pode ficar vazio.")
+
     criar_pasta_notas(pasta)
 
     nome_arquivo = formatar_nome_arquivo(titulo)

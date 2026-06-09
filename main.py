@@ -8,7 +8,7 @@ def criar_nova_nota():
 
     try:
         caminho = salvar_nota(titulo, conteudo)
-    except FileExistsError as erro:
+    except (FileExistsError, ValueError) as erro:
         print(f"\nErro: {erro}")
     else:
         print(f"\nNota salva com sucesso em: {caminho}")
