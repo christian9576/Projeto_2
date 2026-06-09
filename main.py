@@ -49,9 +49,37 @@ def pedir_conteudo_da_nota():
 
 
 def mostrar_notas():
-    print()
-    notas = listar_notas()
-    exibir_lista_de_notas(notas)
+    while True:
+        print()
+        notas = listar_notas()
+
+        if not notas:
+            print("Nenhuma nota encontrada.")
+            return
+
+        exibir_lista_de_notas(notas)
+        print("v - Voltar ao menu principal")
+
+        escolha = input("Escolha uma nota: ")
+
+        if escolha.lower() == "v":
+            return
+
+        if not escolha.isdigit():
+            print("\nErro: Opcao invalida.")
+            continue
+
+        indice = int(escolha) - 1
+
+        if indice < 0 or indice >= len(notas):
+            print("\nErro: Opcao invalida.")
+            continue
+
+        nome_arquivo = notas[indice]
+        nota_excluida = mostrar_acoes_da_nota(nome_arquivo)
+
+        if nota_excluida:
+            continue
 
 
 def exibir_lista_de_notas(notas):
@@ -269,6 +297,93 @@ def mostrar_submenu_edicao():
     print("3 - Voltar")
 
 
+def executar_edicao_da_nota(nome_arquivo):
+    mostrar_submenu_edicao()
+    opcao_edicao = input("Escolha uma opcao: ")
+
+    if opcao_edicao == "1":
+        conteudo_editado = editar_conteudo_da_nota(nome_arquivo)
+
+        if conteudo_editado:
+            editar_titulo = input("Deseja editar o titulo desta nota tambem? (s/n): ")
+
+            if editar_titulo.lower() == "s":
+                novo_nome = editar_titulo_da_nota(nome_arquivo)
+
+                if novo_nome:
+                    return novo_nome
+    elif opcao_edicao == "2":
+        novo_nome = editar_titulo_da_nota(nome_arquivo)
+
+        if novo_nome:
+            nome_arquivo = novo_nome
+            editar_conteudo = input("Deseja editar o conteudo desta nota tambem? (s/n): ")
+
+            if editar_conteudo.lower() == "s":
+                editar_conteudo_da_nota(nome_arquivo)
+    elif opcao_edicao == "3":
+        pass
+    else:
+        print("\nErro: Opcao invalida.")
+
+    return nome_arquivo
+
+
+def mostrar_submenu_acoes_da_nota():
+    print()
+    print("1 - Ler nota")
+    print("2 - Editar nota")
+    print("3 - Excluir nota")
+    print("4 - Voltar")
+
+
+def ler_nota_selecionada(nome_arquivo):
+    try:
+        conteudo = ler_nota(nome_arquivo)
+    except FileNotFoundError as erro:
+        print(f"\nErro: {erro}")
+    else:
+        print()
+        print(conteudo)
+
+
+def excluir_nota_selecionada(nome_arquivo):
+    confirmacao = input(f"Tem certeza que deseja excluir {nome_arquivo}? (s/n): ")
+
+    if confirmacao.lower() != "s":
+        print("\nExclusao cancelada.")
+        return False
+
+    try:
+        excluir_nota(nome_arquivo)
+    except FileNotFoundError as erro:
+        print(f"\nErro: {erro}")
+        return False
+    else:
+        print(f"\nSucesso: Nota excluida: {nome_arquivo}")
+        return True
+
+
+def mostrar_acoes_da_nota(nome_arquivo):
+    while True:
+        mostrar_submenu_acoes_da_nota()
+        escolha = input("Escolha uma opcao: ")
+
+        if escolha == "1":
+            ler_nota_selecionada(nome_arquivo)
+        elif escolha == "2":
+            nome_arquivo = executar_edicao_da_nota(nome_arquivo)
+        elif escolha == "3":
+            nota_excluida = excluir_nota_selecionada(nome_arquivo)
+
+            if nota_excluida:
+                return True
+        elif escolha == "4":
+            return False
+        else:
+            print("\nErro: Opcao invalida.")
+
+
 def editar_nota_por_numero():
     while True:
         print()
@@ -291,30 +406,7 @@ def editar_nota_por_numero():
                 print("\nErro: Opcao invalida.")
             else:
                 nome_arquivo = notas[indice]
-                mostrar_submenu_edicao()
-                opcao_edicao = input("Escolha uma opcao: ")
-
-                if opcao_edicao == "1":
-                    conteudo_editado = editar_conteudo_da_nota(nome_arquivo)
-
-                    if conteudo_editado:
-                        editar_titulo = input("Deseja editar o titulo desta nota tambem? (s/n): ")
-
-                        if editar_titulo.lower() == "s":
-                            editar_titulo_da_nota(nome_arquivo)
-                elif opcao_edicao == "2":
-                    novo_nome = editar_titulo_da_nota(nome_arquivo)
-
-                    if novo_nome:
-                        nome_arquivo = novo_nome
-                        editar_conteudo = input("Deseja editar o conteudo desta nota tambem? (s/n): ")
-
-                        if editar_conteudo.lower() == "s":
-                            editar_conteudo_da_nota(nome_arquivo)
-                elif opcao_edicao == "3":
-                    pass
-                else:
-                    print("\nErro: Opcao invalida.")
+                executar_edicao_da_nota(nome_arquivo)
 
         continuar = input("Deseja editar outra nota? (s/n): ")
 
