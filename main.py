@@ -56,22 +56,68 @@ def exibir_lista_de_notas(notas):
 
 
 def buscar_notas_por_termo():
-    print()
-    termo = input("Termo de busca: ")
+    while True:
+        print()
+        termo = input("Termo de busca: ")
 
-    try:
-        resultados = buscar_notas(termo)
-    except ValueError as erro:
-        print(f"\nErro: {erro}")
-        return
+        try:
+            resultados = buscar_notas(termo)
+        except ValueError as erro:
+            print(f"\nErro: {erro}")
+        else:
+            if not resultados:
+                print("\nNenhuma nota encontrada para esse termo.")
+            else:
+                continuar_busca = mostrar_resultados_da_busca(resultados)
 
-    if not resultados:
-        print("\nNenhuma nota encontrada para esse termo.")
-        return
+                if continuar_busca:
+                    continue
+                else:
+                    return
 
-    print("\nResultados encontrados:")
-    for numero, nota in enumerate(resultados, start=1):
-        print(f"{numero} - {nota}")
+        opcao = input("Deseja buscar outro termo? (s/n): ")
+
+        if opcao.lower() != "s":
+            return
+
+
+def mostrar_resultados_da_busca(resultados):
+    while True:
+        print("\nResultados encontrados:")
+        for numero, nota in enumerate(resultados, start=1):
+            print(f"{numero} - {nota}")
+
+        print("b - Buscar outro termo")
+        print("v - Voltar ao menu principal")
+
+        escolha = input("Escolha uma opcao: ")
+        escolha_normalizada = escolha.lower()
+
+        if escolha_normalizada == "b":
+            return True
+
+        if escolha_normalizada == "v":
+            return False
+
+        if not escolha.isdigit():
+            print("\nErro: Opcao invalida.")
+            continue
+
+        indice = int(escolha) - 1
+
+        if indice < 0 or indice >= len(resultados):
+            print("\nErro: Opcao invalida.")
+            continue
+
+        nome_arquivo = resultados[indice]
+
+        try:
+            conteudo = ler_nota(nome_arquivo)
+        except FileNotFoundError as erro:
+            print(f"\nErro: {erro}")
+        else:
+            print()
+            print(conteudo)
 
 
 def mostrar_conteudo_nota():
