@@ -5,6 +5,7 @@ import pytest
 from notas import (
     buscar_notas,
     editar_nota,
+    editar_titulo_nota,
     excluir_nota,
     formatar_nome_arquivo,
     ler_nota,
@@ -163,3 +164,41 @@ def test_editar_nota_gera_erro_para_conteudo_vazio(tmp_path):
 
     with pytest.raises(ValueError, match="Conteudo nao pode ficar vazio."):
         editar_nota("nota-editavel.md", "   ", tmp_path)
+
+
+def test_editar_titulo_nota_renomeia_nota_existente(tmp_path):
+    caminho_antigo = salvar_nota("Titulo Antigo", "Conteudo preservado", tmp_path)
+
+    novo_caminho = editar_titulo_nota("titulo-antigo.md", "Titulo Novo", tmp_path)
+
+    assert novo_caminho == tmp_path / "titulo-novo.md"
+    assert not caminho_antigo.exists()
+    assert novo_caminho.exists()
+
+
+def test_editar_titulo_nota_atualiza_primeira_linha_markdown(tmp_path):
+    salvar_nota("Titulo Antigo", "Conteudo preservado", tmp_path)
+
+    novo_caminho = editar_titulo_nota("titulo-antigo.md", "Titulo Novo", tmp_path)
+
+    assert novo_caminho.read_text(encoding="utf-8").startswith("# Titulo Novo\n\n")
+
+
+def test_editar_titulo_nota_gera_erro_para_titulo_vazio(tmp_path):
+    salvar_nota("Titulo Antigo", "Conteudo preservado", tmp_path)
+
+    with pytest.raises(ValueError, match="Titulo nao pode ficar vazio."):
+        editar_titulo_nota("titulo-antigo.md", "   ", tmp_path)
+
+
+def test_editar_titulo_nota_gera_erro_para_nota_inexistente(tmp_path):
+    with pytest.raises(FileNotFoundError, match="Nota nao encontrada."):
+        editar_titulo_nota("nao-existe.md", "Titulo Novo", tmp_path)
+
+
+def test_editar_titulo_nota_gera_erro_quando_novo_nome_ja_existe(tmp_path):
+    salvar_nota("Primeira Nota", "Conteudo", tmp_path)
+    salvar_nota("Segunda Nota", "Conteudo", tmp_path)
+
+    with pytest.raises(FileExistsError, match="Ja existe uma nota com esse titulo."):
+        editar_titulo_nota("primeira-nota.md", "Segunda Nota", tmp_path)

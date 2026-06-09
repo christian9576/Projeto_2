@@ -1,4 +1,13 @@
-from notas import buscar_notas, editar_nota, excluir_nota, ler_nota, listar_notas, salvar_nota
+from notas import (
+    buscar_notas,
+    editar_nota,
+    editar_titulo_nota,
+    excluir_nota,
+    formatar_nome_arquivo,
+    ler_nota,
+    listar_notas,
+    salvar_nota,
+)
 
 
 def criar_nova_nota():
@@ -250,6 +259,50 @@ def editar_nota_por_numero():
         print(f"\nSucesso: Nota editada: {nome_arquivo}")
 
 
+def editar_titulo_nota_por_numero():
+    print()
+    notas = listar_notas()
+
+    if not notas:
+        print("Nenhuma nota encontrada.")
+        return
+
+    exibir_lista_de_notas(notas)
+
+    escolha = input("Digite o numero da nota: ")
+
+    if not escolha.isdigit():
+        print("\nErro: Opcao invalida.")
+        return
+
+    indice = int(escolha) - 1
+
+    if indice < 0 or indice >= len(notas):
+        print("\nErro: Opcao invalida.")
+        return
+
+    nome_atual = notas[indice]
+    novo_titulo = input("Novo titulo da nota: ")
+
+    if not novo_titulo.strip():
+        print("\nErro: Titulo nao pode ficar vazio.")
+        return
+
+    novo_nome = formatar_nome_arquivo(novo_titulo)
+    confirmacao = input(f"Tem certeza que deseja renomear {nome_atual} para {novo_nome}? (s/n): ")
+
+    if confirmacao.lower() != "s":
+        print("\nRenomeacao cancelada.")
+        return
+
+    try:
+        novo_caminho = editar_titulo_nota(nome_atual, novo_titulo)
+    except (FileExistsError, FileNotFoundError, ValueError) as erro:
+        print(f"\nErro: {erro}")
+    else:
+        print(f"\nSucesso: Nota renomeada para: {novo_caminho.name}")
+
+
 def mostrar_menu():
     print()
     print("=== Organizador de Notas ===")
@@ -259,7 +312,8 @@ def mostrar_menu():
     print("4 - Buscar notas")
     print("5 - Excluir nota")
     print("6 - Editar nota")
-    print("7 - Sair")
+    print("7 - Editar titulo da nota")
+    print("8 - Sair")
 
 
 def main():
@@ -281,6 +335,8 @@ def main():
         elif opcao == "6":
             editar_nota_por_numero()
         elif opcao == "7":
+            editar_titulo_nota_por_numero()
+        elif opcao == "8":
             print("\nSaindo...")
             break
         else:

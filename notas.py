@@ -106,3 +106,41 @@ def editar_nota(nome_arquivo, novo_conteudo, pasta=PASTA_NOTAS):
     caminho.write_text(novo_texto, encoding="utf-8")
 
     return caminho
+
+
+def editar_titulo_nota(nome_arquivo_atual, novo_titulo, pasta=PASTA_NOTAS):
+    if not novo_titulo.strip():
+        raise ValueError("Titulo nao pode ficar vazio.")
+
+    criar_pasta_notas(pasta)
+
+    caminho_atual = pasta / Path(nome_arquivo_atual).name
+
+    if not caminho_atual.exists():
+        raise FileNotFoundError("Nota nao encontrada.")
+
+    titulo_limpo = novo_titulo.strip()
+    novo_nome_arquivo = formatar_nome_arquivo(titulo_limpo)
+    novo_caminho = pasta / novo_nome_arquivo
+
+    if novo_caminho != caminho_atual and novo_caminho.exists():
+        raise FileExistsError("Ja existe uma nota com esse titulo.")
+
+    conteudo_atual = caminho_atual.read_text(encoding="utf-8")
+    linhas = conteudo_atual.splitlines()
+    novo_titulo_markdown = f"# {titulo_limpo}"
+
+    if linhas and linhas[0].startswith("# "):
+        linhas[0] = novo_titulo_markdown
+        novo_conteudo = "\n".join(linhas)
+    elif conteudo_atual:
+        novo_conteudo = f"{novo_titulo_markdown}\n\n{conteudo_atual}"
+    else:
+        novo_conteudo = novo_titulo_markdown
+
+    caminho_atual.write_text(f"{novo_conteudo}\n", encoding="utf-8")
+
+    if novo_caminho != caminho_atual:
+        caminho_atual.rename(novo_caminho)
+
+    return novo_caminho
