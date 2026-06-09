@@ -17,14 +17,17 @@ def criar_nova_nota():
 def mostrar_notas():
     print()
     notas = listar_notas()
+    exibir_lista_de_notas(notas)
 
+
+def exibir_lista_de_notas(notas):
     if not notas:
         print("Nenhuma nota encontrada.")
         return
 
     print("Notas salvas:")
-    for nota in notas:
-        print(f"- {nota}")
+    for numero, nota in enumerate(notas, start=1):
+        print(f"{numero} - {nota}")
 
 
 def mostrar_conteudo_nota():
