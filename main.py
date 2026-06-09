@@ -32,7 +32,27 @@ def exibir_lista_de_notas(notas):
 
 def mostrar_conteudo_nota():
     print()
-    nome_arquivo = input("Nome do arquivo da nota: ")
+    notas = listar_notas()
+
+    if not notas:
+        print("Nenhuma nota encontrada.")
+        return
+
+    exibir_lista_de_notas(notas)
+
+    escolha = input("Digite o numero da nota: ")
+
+    if not escolha.isdigit():
+        print("\nOpcao invalida.")
+        return
+
+    indice = int(escolha) - 1
+
+    if indice < 0 or indice >= len(notas):
+        print("\nOpcao invalida.")
+        return
+
+    nome_arquivo = notas[indice]
 
     try:
         conteudo = ler_nota(nome_arquivo)
