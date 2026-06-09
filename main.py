@@ -211,7 +211,7 @@ def editar_conteudo_da_nota(nome_arquivo):
         conteudo_atual = ler_nota(nome_arquivo)
     except FileNotFoundError as erro:
         print(f"\nErro: {erro}")
-        return
+        return False
 
     print("\nConteudo atual:")
     print(conteudo_atual)
@@ -220,20 +220,22 @@ def editar_conteudo_da_nota(nome_arquivo):
 
     if not novo_conteudo.strip():
         print("\nErro: Conteudo nao pode ficar vazio.")
-        return
+        return False
 
     confirmacao = input(f"Tem certeza que deseja substituir o conteudo de {nome_arquivo}? (s/n): ")
 
     if confirmacao.lower() != "s":
         print("\nEdicao cancelada.")
-        return
+        return False
 
     try:
         editar_nota(nome_arquivo, novo_conteudo)
     except (FileNotFoundError, ValueError) as erro:
         print(f"\nErro: {erro}")
+        return False
     else:
         print(f"\nSucesso: Nota editada: {nome_arquivo}")
+        return True
 
 
 def editar_titulo_da_nota(nome_atual):
@@ -241,21 +243,23 @@ def editar_titulo_da_nota(nome_atual):
 
     if not novo_titulo.strip():
         print("\nErro: Titulo nao pode ficar vazio.")
-        return
+        return None
 
     novo_nome = formatar_nome_arquivo(novo_titulo)
     confirmacao = input(f"Tem certeza que deseja renomear {nome_atual} para {novo_nome}? (s/n): ")
 
     if confirmacao.lower() != "s":
         print("\nRenomeacao cancelada.")
-        return
+        return None
 
     try:
         novo_caminho = editar_titulo_nota(nome_atual, novo_titulo)
     except (FileExistsError, FileNotFoundError, ValueError) as erro:
         print(f"\nErro: {erro}")
+        return None
     else:
         print(f"\nSucesso: Nota renomeada para: {novo_caminho.name}")
+        return novo_caminho.name
 
 
 def mostrar_submenu_edicao():
@@ -291,9 +295,22 @@ def editar_nota_por_numero():
                 opcao_edicao = input("Escolha uma opcao: ")
 
                 if opcao_edicao == "1":
-                    editar_conteudo_da_nota(nome_arquivo)
+                    conteudo_editado = editar_conteudo_da_nota(nome_arquivo)
+
+                    if conteudo_editado:
+                        editar_titulo = input("Deseja editar o titulo desta nota tambem? (s/n): ")
+
+                        if editar_titulo.lower() == "s":
+                            editar_titulo_da_nota(nome_arquivo)
                 elif opcao_edicao == "2":
-                    editar_titulo_da_nota(nome_arquivo)
+                    novo_nome = editar_titulo_da_nota(nome_arquivo)
+
+                    if novo_nome:
+                        nome_arquivo = novo_nome
+                        editar_conteudo = input("Deseja editar o conteudo desta nota tambem? (s/n): ")
+
+                        if editar_conteudo.lower() == "s":
+                            editar_conteudo_da_nota(nome_arquivo)
                 elif opcao_edicao == "3":
                     pass
                 else:
