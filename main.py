@@ -105,21 +105,27 @@ def buscar_notas_por_termo():
             if not resultados:
                 print("\nNenhuma nota encontrada para esse termo.")
             else:
-                continuar_busca = mostrar_resultados_da_busca(resultados)
+                continuar_busca = mostrar_resultados_da_busca(termo)
 
                 if continuar_busca:
                     continue
                 else:
                     return
 
-        opcao = input("Deseja buscar outro termo? (s/n): ")
+        opcao = input("Digite b para buscar outro termo ou v para voltar: ")
 
-        if opcao.lower() != "s":
+        if opcao.lower() != "b":
             return
 
 
-def mostrar_resultados_da_busca(resultados):
+def mostrar_resultados_da_busca(termo):
     while True:
+        resultados = buscar_notas(termo)
+
+        if not resultados:
+            print("\nNenhuma nota encontrada para esse termo.")
+            return True
+
         print("\nResultados encontrados:")
         for numero, nota in enumerate(resultados, start=1):
             print(f"{numero} - {nota}")
@@ -147,14 +153,7 @@ def mostrar_resultados_da_busca(resultados):
             continue
 
         nome_arquivo = resultados[indice]
-
-        try:
-            conteudo = ler_nota(nome_arquivo)
-        except FileNotFoundError as erro:
-            print(f"\nErro: {erro}")
-        else:
-            print()
-            print(conteudo)
+        mostrar_acoes_da_nota(nome_arquivo)
 
 
 def mostrar_conteudo_nota():
@@ -419,11 +418,8 @@ def mostrar_menu():
     print("=== Organizador de Notas ===")
     print("1 - Criar nova nota")
     print("2 - Listar notas")
-    print("3 - Ler nota")
-    print("4 - Buscar notas")
-    print("5 - Excluir nota")
-    print("6 - Editar nota")
-    print("7 - Sair")
+    print("3 - Buscar notas")
+    print("4 - Sair")
 
 
 def main():
@@ -437,14 +433,8 @@ def main():
         elif opcao == "2":
             mostrar_notas()
         elif opcao == "3":
-            mostrar_conteudo_nota()
-        elif opcao == "4":
             buscar_notas_por_termo()
-        elif opcao == "5":
-            excluir_nota_por_numero()
-        elif opcao == "6":
-            editar_nota_por_numero()
-        elif opcao == "7":
+        elif opcao == "4":
             print("\nSaindo...")
             break
         else:
