@@ -48,6 +48,25 @@ def pedir_conteudo_da_nota():
     return "\n".join(linhas)
 
 
+def confirmar(mensagem):
+    resposta = input(mensagem)
+    return resposta.lower() == "s"
+
+
+def obter_indice_da_escolha(escolha, quantidade):
+    if not escolha.isdigit():
+        print("\nErro: Opcao invalida.")
+        return None
+
+    indice = int(escolha) - 1
+
+    if indice < 0 or indice >= quantidade:
+        print("\nErro: Opcao invalida.")
+        return None
+
+    return indice
+
+
 def mostrar_notas():
     while True:
         print()
@@ -65,14 +84,9 @@ def mostrar_notas():
         if escolha.lower() == "v":
             return
 
-        if not escolha.isdigit():
-            print("\nErro: Opcao invalida.")
-            continue
+        indice = obter_indice_da_escolha(escolha, len(notas))
 
-        indice = int(escolha) - 1
-
-        if indice < 0 or indice >= len(notas):
-            print("\nErro: Opcao invalida.")
+        if indice is None:
             continue
 
         nome_arquivo = notas[indice]
@@ -82,12 +96,12 @@ def mostrar_notas():
             continue
 
 
-def exibir_lista_de_notas(notas):
+def exibir_lista_de_notas(notas, titulo="Notas salvas:"):
     if not notas:
         print("Nenhuma nota encontrada.")
         return
 
-    print("Notas salvas:")
+    print(titulo)
     for numero, nota in enumerate(notas, start=1):
         print(f"{numero} - {nota}")
 
@@ -126,10 +140,8 @@ def mostrar_resultados_da_busca(termo):
             print("\nNenhuma nota encontrada para esse termo.")
             return True
 
-        print("\nResultados encontrados:")
-        for numero, nota in enumerate(resultados, start=1):
-            print(f"{numero} - {nota}")
-
+        print()
+        exibir_lista_de_notas(resultados, "Resultados encontrados:")
         print("b - Buscar outro termo")
         print("v - Voltar ao menu principal")
 
@@ -142,95 +154,13 @@ def mostrar_resultados_da_busca(termo):
         if escolha_normalizada == "v":
             return False
 
-        if not escolha.isdigit():
-            print("\nErro: Opcao invalida.")
-            continue
+        indice = obter_indice_da_escolha(escolha, len(resultados))
 
-        indice = int(escolha) - 1
-
-        if indice < 0 or indice >= len(resultados):
-            print("\nErro: Opcao invalida.")
+        if indice is None:
             continue
 
         nome_arquivo = resultados[indice]
         mostrar_acoes_da_nota(nome_arquivo)
-
-
-def mostrar_conteudo_nota():
-    while True:
-        print()
-        notas = listar_notas()
-
-        if not notas:
-            print("Nenhuma nota encontrada.")
-            return
-
-        exibir_lista_de_notas(notas)
-
-        escolha = input("Digite o numero da nota: ")
-
-        if not escolha.isdigit():
-            print("\nErro: Opcao invalida.")
-        else:
-            indice = int(escolha) - 1
-
-            if indice < 0 or indice >= len(notas):
-                print("\nErro: Opcao invalida.")
-            else:
-                nome_arquivo = notas[indice]
-
-                try:
-                    conteudo = ler_nota(nome_arquivo)
-                except FileNotFoundError as erro:
-                    print(f"\nErro: {erro}")
-                else:
-                    print()
-                    print(conteudo)
-
-        continuar = input("Deseja ler outra nota? (s/n): ")
-
-        if continuar.lower() != "s":
-            return
-
-
-def excluir_nota_por_numero():
-    while True:
-        print()
-        notas = listar_notas()
-
-        if not notas:
-            print("Nenhuma nota encontrada.")
-            return
-
-        exibir_lista_de_notas(notas)
-
-        escolha = input("Digite o numero da nota: ")
-
-        if not escolha.isdigit():
-            print("\nErro: Opcao invalida.")
-        else:
-            indice = int(escolha) - 1
-
-            if indice < 0 or indice >= len(notas):
-                print("\nErro: Opcao invalida.")
-            else:
-                nome_arquivo = notas[indice]
-                confirmacao = input(f"Tem certeza que deseja excluir {nome_arquivo}? (s/n): ")
-
-                if confirmacao.lower() != "s":
-                    print("\nExclusao cancelada.")
-                else:
-                    try:
-                        excluir_nota(nome_arquivo)
-                    except FileNotFoundError as erro:
-                        print(f"\nErro: {erro}")
-                    else:
-                        print(f"\nSucesso: Nota excluida: {nome_arquivo}")
-
-        continuar = input("Deseja excluir outra nota? (s/n): ")
-
-        if continuar.lower() != "s":
-            return
 
 
 def editar_conteudo_da_nota(nome_arquivo):
@@ -249,9 +179,7 @@ def editar_conteudo_da_nota(nome_arquivo):
         print("\nErro: Conteudo nao pode ficar vazio.")
         return False
 
-    confirmacao = input(f"Tem certeza que deseja substituir o conteudo de {nome_arquivo}? (s/n): ")
-
-    if confirmacao.lower() != "s":
+    if not confirmar(f"Tem certeza que deseja substituir o conteudo de {nome_arquivo}? (s/n): "):
         print("\nEdicao cancelada.")
         return False
 
@@ -273,9 +201,7 @@ def editar_titulo_da_nota(nome_atual):
         return None
 
     novo_nome = formatar_nome_arquivo(novo_titulo)
-    confirmacao = input(f"Tem certeza que deseja renomear {nome_atual} para {novo_nome}? (s/n): ")
-
-    if confirmacao.lower() != "s":
+    if not confirmar(f"Tem certeza que deseja renomear {nome_atual} para {novo_nome}? (s/n): "):
         print("\nRenomeacao cancelada.")
         return None
 
@@ -347,9 +273,7 @@ def ler_nota_selecionada(nome_arquivo):
 
 
 def excluir_nota_selecionada(nome_arquivo):
-    confirmacao = input(f"Tem certeza que deseja excluir {nome_arquivo}? (s/n): ")
-
-    if confirmacao.lower() != "s":
+    if not confirmar(f"Tem certeza que deseja excluir {nome_arquivo}? (s/n): "):
         print("\nExclusao cancelada.")
         return False
 
@@ -381,36 +305,6 @@ def mostrar_acoes_da_nota(nome_arquivo):
             return False
         else:
             print("\nErro: Opcao invalida.")
-
-
-def editar_nota_por_numero():
-    while True:
-        print()
-        notas = listar_notas()
-
-        if not notas:
-            print("Nenhuma nota encontrada.")
-            return
-
-        exibir_lista_de_notas(notas)
-
-        escolha = input("Digite o numero da nota: ")
-
-        if not escolha.isdigit():
-            print("\nErro: Opcao invalida.")
-        else:
-            indice = int(escolha) - 1
-
-            if indice < 0 or indice >= len(notas):
-                print("\nErro: Opcao invalida.")
-            else:
-                nome_arquivo = notas[indice]
-                executar_edicao_da_nota(nome_arquivo)
-
-        continuar = input("Deseja editar outra nota? (s/n): ")
-
-        if continuar.lower() != "s":
-            return
 
 
 def mostrar_menu():
