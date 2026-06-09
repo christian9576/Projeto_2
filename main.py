@@ -206,30 +206,7 @@ def excluir_nota_por_numero():
             return
 
 
-def editar_nota_por_numero():
-    print()
-    notas = listar_notas()
-
-    if not notas:
-        print("Nenhuma nota encontrada.")
-        return
-
-    exibir_lista_de_notas(notas)
-
-    escolha = input("Digite o numero da nota: ")
-
-    if not escolha.isdigit():
-        print("\nErro: Opcao invalida.")
-        return
-
-    indice = int(escolha) - 1
-
-    if indice < 0 or indice >= len(notas):
-        print("\nErro: Opcao invalida.")
-        return
-
-    nome_arquivo = notas[indice]
-
+def editar_conteudo_da_nota(nome_arquivo):
     try:
         conteudo_atual = ler_nota(nome_arquivo)
     except FileNotFoundError as erro:
@@ -259,29 +236,7 @@ def editar_nota_por_numero():
         print(f"\nSucesso: Nota editada: {nome_arquivo}")
 
 
-def editar_titulo_nota_por_numero():
-    print()
-    notas = listar_notas()
-
-    if not notas:
-        print("Nenhuma nota encontrada.")
-        return
-
-    exibir_lista_de_notas(notas)
-
-    escolha = input("Digite o numero da nota: ")
-
-    if not escolha.isdigit():
-        print("\nErro: Opcao invalida.")
-        return
-
-    indice = int(escolha) - 1
-
-    if indice < 0 or indice >= len(notas):
-        print("\nErro: Opcao invalida.")
-        return
-
-    nome_atual = notas[indice]
+def editar_titulo_da_nota(nome_atual):
     novo_titulo = input("Novo titulo da nota: ")
 
     if not novo_titulo.strip():
@@ -303,6 +258,53 @@ def editar_titulo_nota_por_numero():
         print(f"\nSucesso: Nota renomeada para: {novo_caminho.name}")
 
 
+def mostrar_submenu_edicao():
+    print()
+    print("1 - Editar conteudo")
+    print("2 - Editar titulo")
+    print("3 - Voltar")
+
+
+def editar_nota_por_numero():
+    while True:
+        print()
+        notas = listar_notas()
+
+        if not notas:
+            print("Nenhuma nota encontrada.")
+            return
+
+        exibir_lista_de_notas(notas)
+
+        escolha = input("Digite o numero da nota: ")
+
+        if not escolha.isdigit():
+            print("\nErro: Opcao invalida.")
+        else:
+            indice = int(escolha) - 1
+
+            if indice < 0 or indice >= len(notas):
+                print("\nErro: Opcao invalida.")
+            else:
+                nome_arquivo = notas[indice]
+                mostrar_submenu_edicao()
+                opcao_edicao = input("Escolha uma opcao: ")
+
+                if opcao_edicao == "1":
+                    editar_conteudo_da_nota(nome_arquivo)
+                elif opcao_edicao == "2":
+                    editar_titulo_da_nota(nome_arquivo)
+                elif opcao_edicao == "3":
+                    pass
+                else:
+                    print("\nErro: Opcao invalida.")
+
+        continuar = input("Deseja editar outra nota? (s/n): ")
+
+        if continuar.lower() != "s":
+            return
+
+
 def mostrar_menu():
     print()
     print("=== Organizador de Notas ===")
@@ -312,8 +314,7 @@ def mostrar_menu():
     print("4 - Buscar notas")
     print("5 - Excluir nota")
     print("6 - Editar nota")
-    print("7 - Editar titulo da nota")
-    print("8 - Sair")
+    print("7 - Sair")
 
 
 def main():
@@ -335,8 +336,6 @@ def main():
         elif opcao == "6":
             editar_nota_por_numero()
         elif opcao == "7":
-            editar_titulo_nota_por_numero()
-        elif opcao == "8":
             print("\nSaindo...")
             break
         else:
