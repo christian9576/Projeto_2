@@ -8,16 +8,30 @@ As notas sao salvas como arquivos `.md` dentro da pasta `notas/`.
 
 - Criar notas em Markdown
 - Escrever conteudo com varias linhas
+- Criar nota com categoria opcional
 - Listar notas
-- Ler notas por numero
 - Buscar notas por termo
-- Ler notas encontradas na busca
+- Ler notas
+- Editar titulo e conteudo
 - Excluir notas com confirmacao
-- Editar conteudo da nota
-- Editar titulo da nota
-- Validar titulo e conteudo
 - Evitar sobrescrever notas existentes
-- Usar menu continuo ate sair
+- Validar titulo e conteudo
+- Usar menu principal simplificado
+
+## Categorias
+
+O projeto tem suporte inicial a categorias/subpastas ao criar notas.
+
+Se o usuario informar uma categoria, a nota e salva em uma subpasta dentro de `notas/`.
+
+Exemplo:
+
+```text
+Categoria: Python Basico
+Pasta criada: notas/python-basico/
+```
+
+Por enquanto, os fluxos de listar, buscar, ler, editar e excluir ainda focam nas notas salvas diretamente no diretorio principal `notas/`.
 
 ## Estrutura do projeto
 
@@ -45,29 +59,16 @@ No terminal, execute:
 python main.py
 ```
 
-## Menu atual
+## Menu principal
 
 ```text
 1 - Criar nova nota
 2 - Listar notas
-3 - Ler nota
-4 - Buscar notas
-5 - Excluir nota
-6 - Editar nota
-7 - Sair
+3 - Buscar notas
+4 - Sair
 ```
 
-## Como usar
-
-Para criar uma nota, escolha `1`, digite o titulo e escreva o conteudo. Para finalizar o conteudo, pressione Enter em uma linha vazia.
-
-Para ler uma nota, escolha `3`, selecione o numero da nota e veja o conteudo no terminal.
-
-Para buscar notas, escolha `4`, digite um termo e selecione uma nota encontrada para ler.
-
-Para excluir uma nota, escolha `5`, selecione o numero da nota e confirme a exclusao.
-
-Para editar uma nota, escolha `6`, selecione o numero da nota e escolha se deseja editar o conteudo ou o titulo.
+As acoes de ler, editar e excluir ficam dentro dos fluxos de listar e buscar.
 
 ## Como rodar os testes
 
@@ -81,10 +82,21 @@ python -m pytest
 
 Os testes ficam no arquivo `test_notas.py`.
 
-## Proximos passos
+## O que aprendi neste projeto
 
-- Menu de acoes por nota
-- Organizar notas em subpastas
-- Melhorar nomes de arquivos
+- Persistencia com arquivos
+- Criacao de pastas pelo Python
+- Leitura e escrita de arquivos
+- Validacoes
+- Testes com pytest
+- Refatoracao
+- Uso de Git/GitHub
+- Uso de Codex por fatias pequenas
+
+## Possiveis proximos passos
+
+- Expandir suporte a categorias
 - Adicionar tags
-- Exportar ou importar notas
+- Melhorar nomes de arquivos
+- Exportar/importar notas
+- Transformar em app com interface
