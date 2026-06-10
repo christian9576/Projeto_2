@@ -5,7 +5,7 @@ PASTA_NOTAS = Path("notas")
 
 
 def criar_pasta_notas(pasta=PASTA_NOTAS):
-    pasta.mkdir(exist_ok=True)
+    pasta.mkdir(parents=True, exist_ok=True)
 
 
 def formatar_nome_arquivo(titulo):
@@ -14,17 +14,28 @@ def formatar_nome_arquivo(titulo):
     return f"{nome}.md"
 
 
-def salvar_nota(titulo, conteudo, pasta=PASTA_NOTAS):
+def formatar_categoria(categoria):
+    nome = categoria.strip().lower()
+    nome = nome.replace(" ", "-")
+    return nome
+
+
+def salvar_nota(titulo, conteudo, pasta=PASTA_NOTAS, categoria=None):
     if not titulo.strip():
         raise ValueError("Titulo nao pode ficar vazio.")
 
     if not conteudo.strip():
         raise ValueError("Conteudo nao pode ficar vazio.")
 
-    criar_pasta_notas(pasta)
+    pasta_destino = pasta
+
+    if categoria and categoria.strip():
+        pasta_destino = pasta / formatar_categoria(categoria)
+
+    criar_pasta_notas(pasta_destino)
 
     nome_arquivo = formatar_nome_arquivo(titulo)
-    caminho = pasta / nome_arquivo
+    caminho = pasta_destino / nome_arquivo
 
     if caminho.exists():
         raise FileExistsError("Ja existe uma nota com esse titulo.")

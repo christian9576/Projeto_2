@@ -18,6 +18,8 @@ def criar_nova_nota():
         print("\nErro: Titulo nao pode ficar vazio.")
         return
 
+    categoria = input("Categoria (opcional, pressione Enter para nenhuma): ")
+
     conteudo = pedir_conteudo_da_nota()
 
     if not conteudo.strip():
@@ -25,7 +27,7 @@ def criar_nova_nota():
         return
 
     try:
-        caminho = salvar_nota(titulo, conteudo)
+        caminho = salvar_nota(titulo, conteudo, categoria=categoria)
     except (FileExistsError, ValueError) as erro:
         print(f"\nErro: {erro}")
     else:

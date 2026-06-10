@@ -202,3 +202,30 @@ def test_editar_titulo_nota_gera_erro_quando_novo_nome_ja_existe(tmp_path):
 
     with pytest.raises(FileExistsError, match="Ja existe uma nota com esse titulo."):
         editar_titulo_nota("primeira-nota.md", "Segunda Nota", tmp_path)
+
+
+def test_salvar_nota_sem_categoria_salva_na_pasta_principal(tmp_path):
+    caminho = salvar_nota("Nota Sem Categoria", "Conteudo", tmp_path)
+
+    assert caminho == tmp_path / "nota-sem-categoria.md"
+    assert caminho.exists()
+
+
+def test_salvar_nota_com_categoria_salva_na_subpasta(tmp_path):
+    caminho = salvar_nota("Nota Com Categoria", "Conteudo", tmp_path, "Python Basico")
+
+    assert caminho == tmp_path / "python-basico" / "nota-com-categoria.md"
+    assert caminho.exists()
+
+
+def test_salvar_nota_com_categoria_cria_subpasta(tmp_path):
+    salvar_nota("Nota Com Categoria", "Conteudo", tmp_path, "Python Basico")
+
+    assert (tmp_path / "python-basico").is_dir()
+
+
+def test_salvar_nota_nao_sobrescreve_dentro_da_mesma_categoria(tmp_path):
+    salvar_nota("Nota Repetida", "Primeiro conteudo", tmp_path, "Python Basico")
+
+    with pytest.raises(FileExistsError, match="Ja existe uma nota com esse titulo."):
+        salvar_nota("Nota Repetida", "Segundo conteudo", tmp_path, "Python Basico")
